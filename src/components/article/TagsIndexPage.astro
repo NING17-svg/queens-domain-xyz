@@ -22,7 +22,7 @@ interface Props {
    */
   noindex?: boolean;
 }
-const { locale, alternates = [], noindex = false } = Astro.props;
+const { locale, alternates = [] } = Astro.props;
 const ui = getUi(locale);
 const nav = ui.nav;
 const shared = ui.shared;
@@ -41,7 +41,7 @@ const jsonLd = simpleBreadcrumbJsonLd({ pageLabel: title, path: tagsPath(locale)
   description={description}
   alternates={alternates}
   jsonLd={[jsonLd]}
-  noindex={noindex}
+  noindex={true}
 >
   <div class="space-y-6">
     <header>

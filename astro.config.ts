@@ -325,6 +325,7 @@ export default defineConfig({
       // demo.astro and gets collected automatically.
       filter: (url) =>
         !noindexPaths.has(normalizePath(decodeSitemapPath(url))) &&
+        !/^\/(?:tags(?:\/|$)|recent\/?$)/.test(normalizePath(decodeSitemapPath(url))) &&
         !(landingLinkEnabled && normalizePath(decodeSitemapPath(url)) === '/'),
       // Inject <lastmod> from article frontmatter (see buildLastmodMap) and
       // hreflang alternates that mirror the page-level truth (see alternatesFor).

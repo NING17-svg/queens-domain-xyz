@@ -1,0 +1,21 @@
+{
+  "name": "Queen's Domain Wiki",
+  "short_name": "Queen's Domain Guide",
+  "description": "Practical Queen's Domain walkthroughs and answers for early routes, combat, equipment and exploration on the Isle of Neasied.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#607b66",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

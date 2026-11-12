@@ -1,0 +1,211 @@
+---
+/**
+ * LegalContent — the shared body for each legal page.
+ * Renders different content based on the `page` prop. English only (per PRD).
+ */
+import { site } from '~/config/site';
+
+interface Props {
+  page: 'about' | 'privacy-policy' | 'terms-of-service' | 'copyright' | 'contact';
+}
+const { page } = Astro.props;
+const game = site.game.name;
+const year = new Date().getFullYear();
+---
+
+{
+  page === 'about' && (
+    <>
+      <p>
+        {site.name} is an independent player guide for {game}, a {site.game.genre} on{' '}
+        {site.game.platform} developed by {site.game.developer}. It answers common navigation,
+        combat, and equipment questions with links to checkable sources.
+      </p>
+      <h2>What We Cover</h2>
+      <ul>
+        <li>Early progression and navigation</li>
+        <li>Boss and equipment guidance where reliable sources exist</li>
+        <li>Travel and exploration questions</li>
+      </ul>
+      <p>All guides are freely accessible without an account.</p>
+      <h2>Contact</h2>
+      <p>
+        Report corrections or contact the maintainer through the{' '}
+        <a href="https://github.com/NING17-svg/queens-domain-xyz/issues" target="_blank" rel="noopener noreferrer">
+          site issue tracker
+        </a>.
+      </p>
+    </>
+  )
+}
+
+{
+  page === 'privacy-policy' && (
+    <>
+      <p>
+        This privacy policy describes how {site.name} ("we", "us", or "our") handles information
+        when you visit this website.
+      </p>
+      <h2>Information We Collect</h2>
+      <p>
+        {site.name} is a static website. We do not require you to create an account or submit
+        personal information. We do not directly collect or store personal data.
+      </p>
+      <h2>Third-Party Services</h2>
+      <p>
+        Cloudflare hosts this site and may process request data for security and delivery. Guides
+        link to external sources, which have their own privacy policies. The site currently has no
+        advertising, analytics, comments, or account system.
+      </p>
+      <h2>Cookies</h2>
+      <p>
+        This site does not currently set advertising or analytics cookies. Your browser may store
+        local preferences such as a dismissed notice.
+      </p>
+      <h2>Children's Privacy</h2>
+      <p>
+        {site.name} is not directed at children under 13, and we do not knowingly collect
+        information from children.
+      </p>
+      <h2>Changes to This Policy</h2>
+      <p>We may update this policy from time to time. Changes will be posted on this page.</p>
+    </>
+  )
+}
+
+{
+  page === 'terms-of-service' && (
+    <>
+      <p>By accessing {site.name}, you agree to the following terms of service.</p>
+      <h2>Use of Content</h2>
+      <p>
+        All guides, articles, and reference material on this site are provided for personal,
+        non-commercial use. You may not copy, republish, or redistribute our content without
+        attribution and a link back to the original page.
+      </p>
+      <h2>Accuracy</h2>
+      <p>
+        We strive for accuracy but make no warranties regarding the completeness or correctness of
+        any content. {game} is frequently updated, and information may become outdated. Always
+        verify critical information in-game.
+      </p>
+      <h2>Third-Party Links</h2>
+      <p>
+        This site links to external websites (official game channels, video tutorials, etc.) that we
+        do not control. We are not responsible for the content or practices of third-party sites.
+      </p>
+      <h2>Trademarks</h2>
+      <p>
+        {game} and all related trademarks, logos, and assets are the property of{' '}
+        {site.game.developer}. {site.name} is an independent fan project and is not affiliated with
+        or endorsed by {site.game.developer}.
+      </p>
+      <h2>Limitation of Liability</h2>
+      <p>
+        Use of this site is at your own risk. We are not liable for any damages arising from your
+        use of the site or reliance on its content.
+      </p>
+      <h2>Changes to These Terms</h2>
+      <p>
+        We may revise these terms at any time. Continued use of the site after changes constitutes
+        acceptance of the updated terms.
+      </p>
+    </>
+  )
+}
+
+{
+  page === 'copyright' && (
+    <>
+      <h2>Copyright Notice</h2>
+      <p>
+        © {year} {site.name}. Original guide text and artwork on this site belong to the site owner.
+        The site code is adapted from the MIT-licensed AnvilWiki template.
+      </p>
+      <h2>Game Assets</h2>
+      <p>
+        {game} and related trademarks are the property of their respective owners. The illustrated
+        hero image is original fan art, not an official game screenshot. {site.name} claims no
+        ownership of game intellectual property.
+      </p>
+      <h2>DMCA / Takedown</h2>
+      <p>
+        If you believe any content on this site infringes your copyright, please contact us via the{' '}
+        <a href="https://github.com/NING17-svg/queens-domain-xyz/issues" target="_blank" rel="noopener noreferrer">
+          site issue tracker
+        </a>{' '}
+        with a detailed description of the allegedly infringing material. We will review and respond
+        to valid requests promptly.
+      </p>
+      <h2>Fan-Made Notice</h2>
+      <p>{site.legalNotice}</p>
+    </>
+  )
+}
+
+{
+  page === 'contact' && (
+    <>
+      {/* h2, not h1 — LegalPage already renders the page H1 (single-H1 rule). */}
+      <h2>Contact {site.name}</h2>
+      <p>
+        {site.name} is an independent fan guide. Contact the maintainer through{' '}
+        <a href="https://github.com/NING17-svg/queens-domain-xyz/issues" target="_blank" rel="noopener noreferrer">
+          GitHub Issues
+        </a>.
+      </p>
+      <h2>Game Source</h2>
+      <ul>
+        {site.social.official && (
+          <li>
+            <strong>Official game website:</strong>{' '}
+            <a href={site.social.official} target="_blank" rel="noopener noreferrer">
+              {site.social.official}
+            </a>
+          </li>
+        )}
+        {site.social.discord && (
+          <li>
+            <strong>Discord:</strong>{' '}
+            <a href={site.social.discord} target="_blank" rel="noopener noreferrer">
+              Join our server
+            </a>
+          </li>
+        )}
+        {site.social.reddit && (
+          <li>
+            <strong>Reddit:</strong>{' '}
+            <a href={site.social.reddit} target="_blank" rel="noopener noreferrer">
+              r/{site.game.name.replace(/\s+/g, '')}
+            </a>
+          </li>
+        )}
+        {site.social.youtube && (
+          <li>
+            <strong>YouTube:</strong>{' '}
+            <a href={site.social.youtube} target="_blank" rel="noopener noreferrer">
+              {site.name} channel
+            </a>
+          </li>
+        )}
+        {site.contactEmail && (
+          <li>
+            <strong>Email:</strong> <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+          </li>
+        )}
+      </ul>
+      <h2>Contributing</h2>
+      <p>
+        Found a typo or outdated info? Open an issue or submit a pull request in the{' '}
+        <a href="https://github.com/NING17-svg/queens-domain-xyz" target="_blank" rel="noopener noreferrer">
+          site repository
+        </a>.
+      </p>
+      <h2>Reporting Issues</h2>
+      <p>
+        For copyright or takedown requests, see our{' '}
+        <a href="/copyright/">Copyright page</a>.
+      </p>
+    </>
+  )
+}

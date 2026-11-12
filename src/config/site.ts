@@ -59,6 +59,10 @@ export interface SiteConfig {
   ogImageHeight: number;
   /** Default author name for articles without an explicit `author` in frontmatter (E-E-A-T signal). */
   defaultAuthor?: string;
+  /** Public GA4 measurement ID. Tracking loads only after consent. */
+  gaMeasurementId?: string;
+  /** Public Bing site verification code. */
+  bingVerification?: string;
   /**
    * Build-time site-type signal, written by apply-template for the non-default
    * presets only ('coupon-hub' | 'tutorial-hub'). Game-wiki forks carry NO
@@ -93,6 +97,8 @@ export const site: SiteConfig = {
   // update these in src/config/site.ts to match (wrong dims mis-crop share cards).
   ogImageWidth: 1672,
   ogImageHeight: 941,
+  gaMeasurementId: 'G-CBT946KD9N',
+  bingVerification: '301CD5703A43F1E7C0C842C1F1A0A1D4',
 };
 
 /** Absolute site URL (no trailing slash). Falls back to the Astro `site` config. */

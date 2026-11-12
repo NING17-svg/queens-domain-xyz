@@ -123,7 +123,7 @@ const xDefaultHref = defaultAlt
     : `${siteUrl}${Astro.url.pathname.replace(localePrefixRe, '')}`;
 
 // Optional analytics / verification / ads (env-var gated — empty = not injected).
-const gaId = import.meta.env.PUBLIC_GA_ID as string | undefined;
+const gaId = (import.meta.env.PUBLIC_GA_ID as string | undefined) || site.gaMeasurementId;
 const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefined;
 const vibecafeProductId = import.meta.env.PUBLIC_VIBECAFE_PRODUCT_ID as string | undefined;
 const vibecafeAuthKey = import.meta.env.PUBLIC_VIBECAFE_AUTH_KEY as string | undefined;
@@ -239,6 +239,7 @@ const privacyLabel = consent?.privacyLabel ?? footerStrings.privacyPolicy ?? 'Pr
 
     {/* Google Search Console verification (optional) */}
     {gscVerification && <meta name="google-site-verification" content={gscVerification} />}
+    {site.bingVerification && <meta name="msvalidate.01" content={site.bingVerification} />}
 
     {/*
       Analytics / AdSense are injected DYNAMICALLY (consent-gated).

@@ -63,6 +63,8 @@ export interface SiteConfig {
   gaMeasurementId?: string;
   /** Public Bing site verification code. */
   bingVerification?: string;
+  /** Public AdSense publisher ID; advertising scripts load only after consent. */
+  adsenseClient?: string;
   /**
    * Build-time site-type signal, written by apply-template for the non-default
    * presets only ('coupon-hub' | 'tutorial-hub'). Game-wiki forks carry NO
@@ -99,6 +101,7 @@ export const site: SiteConfig = {
   ogImageHeight: 941,
   gaMeasurementId: 'G-CBT946KD9N',
   bingVerification: '301CD5703A43F1E7C0C842C1F1A0A1D4',
+  adsenseClient: 'ca-pub-4194035852162505',
 };
 
 /** Absolute site URL (no trailing slash). Falls back to the Astro `site` config. */

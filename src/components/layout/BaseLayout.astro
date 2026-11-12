@@ -128,7 +128,7 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
 const vibecafeProductId = import.meta.env.PUBLIC_VIBECAFE_PRODUCT_ID as string | undefined;
 const vibecafeAuthKey = import.meta.env.PUBLIC_VIBECAFE_AUTH_KEY as string | undefined;
 const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION as string | undefined;
-const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
+const adsenseClient = (import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined) || site.adsenseClient;
 
 // Consent banner labels: wiki locales derive them from the locale JSON
 // (hardcoded English fallbacks for a locale whose JSON hasn't been translated
@@ -240,6 +240,7 @@ const privacyLabel = consent?.privacyLabel ?? footerStrings.privacyPolicy ?? 'Pr
     {/* Google Search Console verification (optional) */}
     {gscVerification && <meta name="google-site-verification" content={gscVerification} />}
     {site.bingVerification && <meta name="msvalidate.01" content={site.bingVerification} />}
+    {site.adsenseClient && <meta name="google-adsense-account" content={site.adsenseClient} />}
 
     {/*
       Analytics / AdSense are injected DYNAMICALLY (consent-gated).

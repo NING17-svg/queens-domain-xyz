@@ -61,6 +61,8 @@ export interface SiteConfig {
   defaultAuthor?: string;
   /** Public GA4 measurement ID. Tracking loads only after consent. */
   gaMeasurementId?: string;
+  /** Plausible script URL. Tracking loads only after consent. */
+  plausibleScriptSrc?: string;
   /** Public Bing site verification code. */
   bingVerification?: string;
   /** Public AdSense publisher ID; advertising scripts load only after consent. */
@@ -100,6 +102,7 @@ export const site: SiteConfig = {
   ogImageWidth: 1672,
   ogImageHeight: 941,
   gaMeasurementId: 'G-CBT946KD9N',
+  plausibleScriptSrc: 'https://stats.ningshiqi.com/js/pa-R_s9T8Yec_mdcMLmWlTom.js',
   bingVerification: '301CD5703A43F1E7C0C842C1F1A0A1D4',
   adsenseClient: 'ca-pub-4194035852162505',
 };

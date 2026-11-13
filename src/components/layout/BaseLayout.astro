@@ -124,6 +124,7 @@ const xDefaultHref = defaultAlt
 
 // Optional analytics / verification / ads (env-var gated — empty = not injected).
 const gaId = (import.meta.env.PUBLIC_GA_ID as string | undefined) || site.gaMeasurementId;
+const plausibleScriptSrc = site.plausibleScriptSrc;
 const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefined;
 const vibecafeProductId = import.meta.env.PUBLIC_VIBECAFE_PRODUCT_ID as string | undefined;
 const vibecafeAuthKey = import.meta.env.PUBLIC_VIBECAFE_AUTH_KEY as string | undefined;
@@ -248,8 +249,8 @@ const privacyLabel = consent?.privacyLabel ?? footerStrings.privacyPolicy ?? 'Pr
       the visitor accepts. See GDPR note in AGENTS.md. No tracking env vars
       → this block renders nothing → zero JS.
     */}
-    {(gaId || adsenseClient) && (
-      <script is:inline define:vars={{ gaId, adsenseClient }}>
+    {(gaId || plausibleScriptSrc || adsenseClient) && (
+      <script is:inline define:vars={{ gaId, plausibleScriptSrc, adsenseClient }}>
         window.__awLoadTrackers = () => {
           if (window.__awTrackersLoaded) return;
           window.__awTrackersLoaded = true;
@@ -264,6 +265,19 @@ const privacyLabel = consent?.privacyLabel ?? footerStrings.privacyPolicy ?? 'Pr
             }
             gtag('js', new Date());
             gtag('config', gaId);
+          }
+          if (plausibleScriptSrc) {
+            window.plausible = window.plausible || function () {
+              (plausible.q = plausible.q || []).push(arguments);
+            };
+            plausible.init = plausible.init || function (i) {
+              plausible.o = i || {};
+            };
+            plausible.init();
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = plausibleScriptSrc;
+            document.head.appendChild(s);
           }
           if (adsenseClient) {
             const s = document.createElement('script');
@@ -354,7 +368,7 @@ const privacyLabel = consent?.privacyLabel ?? footerStrings.privacyPolicy ?? 'Pr
   <body class="min-h-screen bg-background text-foreground antialiased">
     <slot />
     {/* Consent banner — only rendered when tracking env vars are set. */}
-    {(gaId || adsenseClient) && (
+    {(gaId || plausibleScriptSrc || adsenseClient) && (
       <CookieConsent
         labels={{
           title: consentLabels.title,

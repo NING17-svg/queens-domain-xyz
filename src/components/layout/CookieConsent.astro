@@ -1,9 +1,9 @@
 ---
 /**
- * CookieConsent — applies the visitor's saved choice or the regional Plausible default.
+ * CookieConsent — applies the visitor's saved choice or the regional analytics default.
  *
  * How it works (with BaseLayout):
- *   - Given no saved choice, known non-EU regions start Plausible without a banner.
+ *   - Given no saved choice, known non-EU regions start analytics without a banner.
  *   - EU and unknown regions show the banner before loading any trackers.
  *   - Accept  → store 'accepted', call __awLoadTrackers(), remove banner.
  *   - Decline → store 'declined', trackers never load (this session & future).
@@ -71,7 +71,7 @@ const { labels, privacyHref, privacyLabel } = Astro.props;
   // Trackers are loaded by BaseLayout.
   declare global {
     interface Window {
-      __awLoadPlausible?: () => void;
+      __awLoadAnalytics?: () => void;
       __awLoadTrackers?: () => void;
     }
   }
@@ -104,7 +104,7 @@ const { labels, privacyHref, privacyLabel } = Astro.props;
     }
     if (stored === 'declined') return; // trackers stay off
 
-    if (window.__awLoadPlausible) {
+    if (window.__awLoadAnalytics) {
       let autoStart = false;
       try {
         const response = await fetch('/api/analytics-consent', {
@@ -116,7 +116,7 @@ const { labels, privacyHref, privacyLabel } = Astro.props;
         // Ask for consent if the visitor's region could not be checked.
       }
       if (autoStart) {
-        window.__awLoadPlausible();
+        window.__awLoadAnalytics();
         return;
       }
     }

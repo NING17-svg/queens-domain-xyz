@@ -14,6 +14,7 @@ import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
+import { onRequestGet } from '../functions/api/analytics-consent';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (rel: string) => readFileSync(join(root, rel), 'utf8');
@@ -56,4 +57,19 @@ describe('consent literals pinned to shared-ui.ts', () => {
       expect(event, `${file}: accepted-event literal not found or drifted`).toBe(acceptedEvent);
     });
   }
+});
+
+test.each([
+  ['United States', { country: 'US' }, true],
+  ['United Kingdom', { country: 'GB' }, true],
+  ['France', { country: 'FR', isEUCountry: '1' }, false],
+  ['unknown', { country: 'XX' }, false],
+  ['Tor', { country: 'T1' }, false],
+  ['missing geolocation', undefined, false],
+])('returns uncached analytics settings for %s', async (_name, cf, autoStart) => {
+  const request = Object.assign(new Request('https://example.com/api/analytics-consent'), { cf });
+  const response = onRequestGet({ request });
+
+  expect(response.headers.get('Cache-Control')).toBe('private, no-store');
+  expect(await response.json()).toEqual({ autoStart });
 });

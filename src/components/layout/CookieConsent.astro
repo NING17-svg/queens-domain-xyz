@@ -1,12 +1,10 @@
 ---
 /**
- * CookieConsent — GDPR/ePrivacy consent banner that actually GATES tracking.
+ * CookieConsent — applies the visitor's saved choice or the regional Plausible default.
  *
  * How it works (with BaseLayout):
- *   - BaseLayout no longer injects GA / AdSense statically. Instead it defines
- *     `window.__awLoadTrackers()` which injects them dynamically.
- *   - This component shows a banner when no choice is stored (only rendered
- *     at all when tracking env vars are set — see BaseLayout).
+ *   - Given no saved choice, known non-EU regions start Plausible without a banner.
+ *   - EU and unknown regions show the banner before loading any trackers.
  *   - Accept  → store 'accepted', call __awLoadTrackers(), remove banner.
  *   - Decline → store 'declined', trackers never load (this session & future).
  *   - Returning visitors with a stored choice never see the banner again.
@@ -70,13 +68,14 @@ const { labels, privacyHref, privacyLabel } = Astro.props;
 </div>
 
 <script>
-  // Type the tracker loader defined in BaseLayout (consent-gated GA/AdSense).
+  // Trackers are loaded by BaseLayout.
   declare global {
     interface Window {
+      __awLoadPlausible?: () => void;
       __awLoadTrackers?: () => void;
     }
   }
-  (() => {
+  (async () => {
     // Script can't see frontmatter imports — duplicates of the canonical
     // constants in src/lib/shared-ui.ts; tests/consent.test.ts pins all copies.
     const KEY = 'aw-cookie-consent';
@@ -104,6 +103,23 @@ const { labels, privacyHref, privacyLabel } = Astro.props;
       return; // never show the banner
     }
     if (stored === 'declined') return; // trackers stay off
+
+    if (window.__awLoadPlausible) {
+      let autoStart = false;
+      try {
+        const response = await fetch('/api/analytics-consent', {
+          cache: 'no-store',
+          signal: AbortSignal.timeout(2500),
+        });
+        autoStart = response.ok && (await response.json()).autoStart === true;
+      } catch {
+        // Ask for consent if the visitor's region could not be checked.
+      }
+      if (autoStart) {
+        window.__awLoadPlausible();
+        return;
+      }
+    }
 
     banner.hidden = false;
     banner.querySelector('[data-consent-accept]')?.addEventListener('click', () => {

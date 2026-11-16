@@ -243,30 +243,14 @@ const privacyLabel = consent?.privacyLabel ?? footerStrings.privacyPolicy ?? 'Pr
     {site.bingVerification && <meta name="msvalidate.01" content={site.bingVerification} />}
     {site.adsenseClient && <meta name="google-adsense-account" content={site.adsenseClient} />}
 
-    {/*
-      Analytics / AdSense are injected DYNAMICALLY (consent-gated).
-      BaseLayout only defines the loader; CookieConsent.astro calls it after
-      the visitor accepts. See GDPR note in AGENTS.md. No tracking env vars
-      → this block renders nothing → zero JS.
-    */}
+    {/* CookieConsent chooses whether to load Plausible alone or all configured trackers. */}
     {(gaId || plausibleScriptSrc || adsenseClient) && (
       <script is:inline define:vars={{ gaId, plausibleScriptSrc, adsenseClient }}>
-        window.__awLoadTrackers = () => {
-          if (window.__awTrackersLoaded) return;
-          window.__awTrackersLoaded = true;
-          if (gaId) {
-            const s = document.createElement('script');
-            s.async = true;
-            s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
-            document.head.appendChild(s);
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-              dataLayer.push(arguments);
-            }
-            gtag('js', new Date());
-            gtag('config', gaId);
-          }
-          if (plausibleScriptSrc) {
+        if (plausibleScriptSrc) {
+          let loaded = false;
+          window.__awLoadPlausible = () => {
+            if (loaded) return;
+            loaded = true;
             window.plausible = window.plausible || function () {
               (plausible.q = plausible.q || []).push(arguments);
             };
@@ -278,6 +262,23 @@ const privacyLabel = consent?.privacyLabel ?? footerStrings.privacyPolicy ?? 'Pr
             s.async = true;
             s.src = plausibleScriptSrc;
             document.head.appendChild(s);
+          };
+        }
+        window.__awLoadTrackers = () => {
+          if (window.__awTrackersLoaded) return;
+          window.__awTrackersLoaded = true;
+          window.__awLoadPlausible?.();
+          if (gaId) {
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+            document.head.appendChild(s);
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', gaId);
           }
           if (adsenseClient) {
             const s = document.createElement('script');
